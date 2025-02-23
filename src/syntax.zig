@@ -8,14 +8,25 @@ const std = @import("std");
 // mutability
 test "const and var" {
     const a: i32 = 42;
-
-    const b = a;
+    const b = &a;
     var c = &a;
 
-    std.debug.print("a is {}, b is {}, c is {}\n", .{ @TypeOf(a), @TypeOf(b), @TypeOf(c) });
+    std.debug.print("a {} => {}\nb {} => {}\nc {} => {}\n", .{
+        @TypeOf(a),
+        a,
+        @TypeOf(b),
+        b,
+        @TypeOf(c),
+        c,
+    });
 
+    // will this work?
+    a = 73;
+    // and this?
     b = c;
+    // and this?
     c.* = 73;
+    // and this?
     c = undefined;
 }
 

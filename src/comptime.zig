@@ -9,15 +9,6 @@ test "comptime assert" {
     try comptime std.testing.expectEqual(c, 3);
 }
 
-// When a test is named exactly as the struct or function it tests, it is called a "doctest".
-// It will appear in the rendered documentation.
-test Observer {
-    var counter = Observer(u128){ .inner = 0 };
-    counter.update(&counterIncr);
-
-    try std.testing.expectEqual(counter.inner, 1);
-}
-
 /// Observer propagates the changes to the inner value using the provided function.
 pub fn Observer(comptime T: type) type {
     return struct {
@@ -27,6 +18,15 @@ pub fn Observer(comptime T: type) type {
         // This allows mutability, because in Zig all function arguments are immutable.
         pub fn update(self: *@This(), change: *const fn (arg: T) T) void {
             self.inner = change(self.inner);
+        }
+
+        // When a test is named exactly as the struct or function it tests, it is called a "doctest".
+        // It will appear in the rendered documentation.
+        test Observer {
+            var counter = Observer(u128){ .inner = 0 };
+            counter.update(&counterIncr);
+
+            try std.testing.expectEqual(counter.inner, 1);
         }
     };
 }
